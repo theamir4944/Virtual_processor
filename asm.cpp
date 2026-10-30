@@ -123,13 +123,13 @@ void get_p_func(asm_t* asm_st, operation_t op) {
     long konst_arg = 0;
 
     bool if_memory = (asm_st->read_buffer_copy[0] == '[');
-    asm_st->read_buffer_copy += if_memory; // TODO: javn sizeof(char) => sizeof(uint8_t) ;
+    asm_st->read_buffer_copy += if_memory;
     asm_st->delta_read_buffer = 0;
     skip_space(asm_st->read_buffer_copy)
 
     bool if_regist = (bool) sscanf(asm_st->read_buffer_copy, "%2[A-ZX]%n", str_regist_arg, &(asm_st->delta_read_buffer));
     raise_buffer_if(if_regist)
-    regist_arg = (str_regist_arg[0] >= 'A' && str_regist_arg[0] <= 'D') ? (str_regist_arg[0] - 'A' + 1) : 0;
+    regist_arg = (str_regist_arg[0] >= 'A' && str_regist_arg[0] <= 'A' + REGISTER_NUM) ? (str_regist_arg[0] - 'A' + 1) : 0;
     asm_st->delta_read_buffer = 0;
 
     skip_space(asm_st->read_buffer_copy)
@@ -150,7 +150,6 @@ void get_p_func(asm_t* asm_st, operation_t op) {
     memcpy(asm_st->code_buffer_copy, &result, sizeof(char));
     asm_st->code_buffer_copy++;
     asm_st->code_size++;
-    // TODO: char => uint8_t ;
 
     if (if_regist) {
         memcpy(asm_st->code_buffer_copy, &regist_arg, sizeof(long));

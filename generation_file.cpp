@@ -126,6 +126,7 @@ int main(const int argc, const char* argv[]) {
 
     fprintf(file_stream, "typedef long hash_t;\n");
     fprintf(file_stream, "const long N_COMANDS = %zd;\n", N_COMANDS);
+    fprintf(file_stream, "const int REGISTER_NUM = 8;\n");
     
     fprintf(file_stream, "\n#define MEM_MASK 0b10000000\n");
     fprintf(file_stream,   "#define REG_MASK 0b01000000\n");

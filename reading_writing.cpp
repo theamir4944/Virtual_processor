@@ -25,7 +25,7 @@ ssize_t text_to_buffer(char* file_read_name, char** buffer_for_read) {
     ssize_t num_chars_in_file = open_and_stat(file_read_name);
     *buffer_for_read = (char*) calloc (num_chars_in_file + 2, sizeof(char));
 
-    int file_decriptor = open(file_read_name, O_RDONLY, ALL_PERMISSION);
+    int file_decriptor = open(file_read_name, O_RDONLY | O_BINARY, ALL_PERMISSION);
 
     num_chars_in_file = read(file_decriptor, *buffer_for_read, num_chars_in_file);
     (*buffer_for_read)[num_chars_in_file + 0] = '\n';
@@ -44,7 +44,7 @@ ssize_t text_to_file(const char* file_write_name, char* buffer_for_write, long b
         return -1;
     }
 
-    int file_decriptor = open(file_write_name, O_WRONLY | O_CREAT | O_TRUNC, ALL_PERMISSION);
+    int file_decriptor = open(file_write_name, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, ALL_PERMISSION);
     ssize_t num_wrote_chars = write(file_decriptor, buffer_for_write, buffer_length);
 
     close(file_decriptor);

@@ -7,9 +7,11 @@
 #include <stdint.h>
 
 
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 800;
-const int REGISTER_NUM = 4;
+const int SCREEN_WIDTH = 120;
+const int SCREEN_HEIGHT = 80;
+
+
+// #define DEBUG
 
 
 // #define COND_JUMP(spu, arg_1, sign) { long num_1 = 0, num_2 = 0;\
@@ -63,6 +65,10 @@ int main(int argc, char* argv[]) {
 
     uchar new_comand = 0;
     while ((new_comand = spu_data.byte_code_buffer[spu_data.buffer_index++]) != HLT) {
+
+#ifdef DEBUG
+        printf("new_comand got ");
+#endif // DEBUG
 
         uchar real_comand = new_comand & CMD_MASK;
 
@@ -259,16 +265,27 @@ void VM_CALL(spu_t* spu, arg_t* arguments) {
 
 void VM_PUSH(spu_t* spu, arg_t* arguments) {
 
+#ifdef DEBUG
+    printf("PUSH\t");
+#endif // DEBUG
+
     arguments->arg_1 = 0;
     arguments->arg_2 = 0;
     if (arguments->if_regist) {
         getarg(arguments->arg_1);
     }
+
+    // printf("Arg-1: %7lg\t\t", arguments->arg_1);
+
     if (arguments->if_konst) {
         getarg(arguments->arg_2);
     }
 
+    // printf("Arg-2: %7lg\t\t", arguments->arg_2);
+
     long res_arg = spu->registers[arguments->arg_1] + arguments->arg_2;
+
+    // printf("Res_arg: %7lg\t\t\n", res_arg);
     
     if (arguments->if_memory) {
         stack_push(spu->data_stack, spu->ram[res_arg]);
@@ -276,6 +293,10 @@ void VM_PUSH(spu_t* spu, arg_t* arguments) {
     else {
         stack_push(spu->data_stack, res_arg);
     }
+    
+#ifdef DEBUG
+    printf(" \tArg 1 = %3ld ; Arg 2 = %3ld\n", arguments->arg_1, arguments->arg_2);
+#endif // DEBUG
 
     return;
     
@@ -283,12 +304,24 @@ void VM_PUSH(spu_t* spu, arg_t* arguments) {
 
 
 void VM_POP(spu_t* spu, arg_t* arguments) {
-    
+
+#ifdef DEBUG
+    printf("POP \t");
+    printf("%5d\t", spu->byte_code_buffer[spu->buffer_index - 1] & 0b11100000);
+#endif // DEBUG
+
+    // printf("if_regist: %d ", arguments->if_regist);
+    // printf("if_konst : %d ", arguments->if_konst );
+    // printf("if_memory: %d \n", arguments->if_memory);
+
     arguments->arg_1 = 0;
     arguments->arg_2 = 0;
     if (arguments->if_regist) {
         getarg(arguments->arg_1);
     }
+
+    // printf("Reg-num: %d\n", arguments->arg_1);
+
     if (arguments->if_konst) {
         getarg(arguments->arg_2);
     }
@@ -300,6 +333,10 @@ void VM_POP(spu_t* spu, arg_t* arguments) {
     else {
         stack_pop(spu->data_stack, spu->registers + arguments->arg_1);
     }
+
+#ifdef DEBUG
+    printf("Arg 1 = %3ld ; Arg 2 = %3ld\n", arguments->arg_1, arguments->arg_2);
+#endif // DEBUG
 
     return;
 
@@ -316,6 +353,8 @@ void VM_SQRT(spu_t* spu, arg_t* arguments) {
 
 
 void VM_DRW(spu_t* spu, arg_t* arguments) {
+
+    // printf("DRW began\n");
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib - main window");
 

@@ -6,7 +6,6 @@ OU
 HLT
 
 
-
 :1
 
 PUSH DX
@@ -38,7 +37,6 @@ PUSH AX
 ADD
 POP AX
 RET
-
 
 
 :2
